@@ -3,7 +3,6 @@ import 'package:echallan2022/controllers/user_controller.dart';
 import 'package:echallan2022/models/challan_model.dart';
 import 'package:echallan2022/screens/common/components/app_bar.dart';
 import 'package:echallan2022/utils/SizeConfig.dart';
-import 'package:echallan2022/utils/my_print.dart';
 import 'package:echallan2022/utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -61,7 +60,20 @@ class _VehicleChallanListScreenState extends State<VehicleChallanListScreen> {
 
   Widget getChallansListView(List<ChallanModel> list) {
     if(list.isEmpty) {
-      return const Center(child: Text("No Challans"),);
+      return RefreshIndicator(
+        onRefresh: () async {
+          futureGetData = UserController().getChallansFromVehicleId(widget.vehicleNumber);
+          setState(() {});
+        },
+        color: Styles.primaryColor,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.4,),
+            const Center(child: Text("No Challans"),),
+          ],
+        ),
+      );
     }
     else {
       return RefreshIndicator(

@@ -132,6 +132,10 @@ class UserController {
       userProvider.isVehiclesLoading = false;
       userProvider.notifyListeners();
     }
+    else {
+      userProvider.vehiclesList.clear();
+      userProvider.notifyListeners();
+    }
   }
   
   Future<bool> addVehicle(VehicleModel vehicleModel) async {

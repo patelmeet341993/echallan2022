@@ -23,30 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool isFirst = true, pageMounted = false, isLoading = false;
-  late DatabaseReference _deviceRef;
-  late StreamSubscription<DatabaseEvent> _deviceSubscription;
-
-  List<String> videos = [];
-
-  bool status = false;
-  String text = "";
-
-  Future<void> initSync() async {
-    _deviceRef = FirebaseDatabase.instance.ref('device');
-
-    _deviceSubscription = _deviceRef.onValue.listen((DatabaseEvent event) {
-      print("Value:${event.snapshot.value}");
-      try {
-        Map<String, dynamic> map = Map.castFrom(event.snapshot.value as Map);
-        text = map['data'] ?? "";
-        status = (map['status'] ?? "") == "on" ? true : false;
-        if(pageMounted) setState(() {});
-      }
-      catch(e) {
-
-      }
-    });
-  }
 
   Future<void> deleteVehicle(VehicleModel vehicleModel) async {
     setState(() {
@@ -68,7 +44,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    initSync();
     super.initState();
   }
 
@@ -81,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if(isFirst) {
       isFirst = false;
+      UserController().getMyVehicles();
     }
 
     return ModalProgressHUD(
@@ -139,7 +115,19 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           }
           else {
-            return const Center(child: Text("No Vehicles"),);
+            return RefreshIndicator(
+              onRefresh: () async {
+                UserController().getMyVehicles();
+              },
+              color: Styles.primaryColor,
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.4,),
+                  const Center(child: Text("No Vehicles"),),
+                ],
+              ),
+            );
           }
         }
       },
