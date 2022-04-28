@@ -16,6 +16,13 @@ class ChallanModel {
     registrationNumber = map['registrationNumber']?.toString() ?? "";
     imageUrl = map['imageUrl']?.toString() ?? "";
     amount = double.tryParse(map['amount']?.toString() ?? "0") ?? 0;
+    try {
+      String timeString = (map['createdTime']?.toString() ?? "");
+      if(timeString.isNotEmpty) {
+        createdTime = DateTime.tryParse(timeString);
+      }
+    }
+    catch(e) {}
   }
 
   void updateFromMap(Map<String, dynamic> map) {
@@ -23,6 +30,13 @@ class ChallanModel {
     registrationNumber = map['registrationNumber']?.toString() ?? "";
     imageUrl = map['imageUrl']?.toString() ?? "";
     amount = double.tryParse(map['amount']?.toString() ?? "0") ?? 0;
+    try {
+      String timeString = (map['createdTime']?.toString() ?? "");
+      if(timeString.isNotEmpty) {
+        createdTime = DateTime.tryParse(timeString);
+      }
+    }
+    catch(e) {}
   }
 
   Map<String, dynamic> tomap() {
@@ -30,7 +44,7 @@ class ChallanModel {
       "challanId" : challanId,
       "registrationNumber" : registrationNumber,
       "imageUrl" : imageUrl,
-      "createdTime" : createdTime,
+      "createdTime" : createdTime.toString(),
       "amount" : amount,
     };
   }

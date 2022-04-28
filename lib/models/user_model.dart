@@ -27,8 +27,8 @@ class UserModel {
     catch(e) {}
 
     try {
-      List<String> list = List.castFrom(map['myVehicles'] ?? []);
-      myVehicles = list;
+      Map<String, dynamic> myVehiclesMap = Map.castFrom<dynamic, dynamic, String, dynamic>(map['myVehicles'] ?? []);
+      myVehicles = myVehiclesMap.keys.toList();
     }
     catch(e) {}
   }
@@ -48,20 +48,25 @@ class UserModel {
     catch(e) {}
 
     try {
-      List<String> list = List.castFrom(map['myVehicles'] ?? []);
-      myVehicles = list;
+      Map<String, dynamic> myVehiclesMap = Map.castFrom<dynamic, dynamic, String, dynamic>(map['myVehicles'] ?? []);
+      myVehicles = myVehiclesMap.keys.toList();
     }
     catch(e) {}
 
   }
 
   Map<String, dynamic> tomap() {
+    Map<String, dynamic> myVehiclesMap = {};
+    myVehicles.forEach((element) {
+      myVehiclesMap[element] = true;
+    });
+
     return {
       "id" : id,
       "name" : name,
       "image" : image,
       "email" : email,
-      "myVehicles" : myVehicles,
+      "myVehicles" : myVehiclesMap,
       "createdTime" : createdTime.toString(),
     };
   }

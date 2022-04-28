@@ -2,12 +2,20 @@ import 'package:echallan2022/screens/home_screen/vehicle_challan_list_screen.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:echallan2022/screens/authentication/login_screen.dart';
-import 'package:echallan2022/screens/home_screen/create_vehicle_screen.dart';
+import 'package:echallan2022/screens/home_screen/add_vehicle_screen.dart';
 import 'package:echallan2022/screens/home_screen/main_page.dart';
 import 'package:echallan2022/splash_screen.dart';
 import 'package:echallan2022/utils/my_print.dart';
 
 class NavigationController {
+  static NavigationController? _instance;
+
+  factory NavigationController() {
+    return _instance ??= NavigationController._();
+  }
+
+  NavigationController._();
+
   GlobalKey<NavigatorState> mainAppKey = GlobalKey<NavigatorState>();
 
   Route? onGeneratedRoutes(RouteSettings routeSettings) {
@@ -28,16 +36,16 @@ class NavigationController {
         widget = const MainPage();
         break;
       }
-      case CreateVehicleScreen.routeName : {
-        widget = const CreateVehicleScreen();
+      case AddVehicleScreen.routeName : {
+        widget = const AddVehicleScreen();
         break;
       }
       case VehicleChallanListScreen.routeName : {
-        widget = const VehicleChallanListScreen();
+        dynamic argument = routeSettings.arguments;
+        if(argument is String && argument.isNotEmpty) {
+          widget = VehicleChallanListScreen(vehicleNumber: argument.toString(),);
+        }
         break;
-      }
-      default : {
-        widget = const SplashScreen();
       }
     }
 

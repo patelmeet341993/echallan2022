@@ -1,5 +1,7 @@
 import 'package:echallan2022/configs/constants.dart';
 import 'package:echallan2022/controllers/navigation_controller.dart';
+import 'package:echallan2022/models/challan_model.dart';
+import 'package:echallan2022/models/vehicle_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:echallan2022/controllers/providers/user_provider.dart';
@@ -96,10 +98,130 @@ class UserController {
       userProvider.isVehiclesLoading = true;
       userProvider.notifyListeners();
 
-      //FirebaseDatabase.instance.ref()
+      List<Future> futures = [];
+      List<VehicleModel> vehicles = [];
 
+      MyPrint.printOnConsole("Vehicles List:${(userProvider.userModel?.myVehicles ?? [])}");
+      for (var element in (userProvider.userModel?.myVehicles ?? [])) {
+        futures.add(FirebaseDatabase.instance.ref(VEHICLES_NODE).child(element).get().then((DataSnapshot dataSnapshot) {
+          if(dataSnapshot.exists && dataSnapshot.value != null) {
+            Map<String, dynamic> map = {};
+            try {
+              map = Map.castFrom<dynamic, dynamic, String, dynamic>(dataSnapshot.value as Map);
+            }
+            catch(e, s) {
+              MyPrint.printOnConsole("Error in Converting User Data To Map:${e}");
+              MyPrint.printOnConsole(s);
+            }
+
+            if(map.isNotEmpty) {
+              VehicleModel vehicleModel = VehicleModel.fromMap(map);
+              vehicles.add(vehicleModel);
+              MyPrint.printOnConsole("vehicleModel:${vehicleModel}");
+            }
+          }
+        })
+        .catchError((e) {
+
+        }));
+      }
+
+      await Future.wait(futures);
+
+      userProvider.vehiclesList = vehicles;
       userProvider.isVehiclesLoading = false;
       userProvider.notifyListeners();
     }
+  }
+  
+  Future<bool> addVehicle(VehicleModel vehicleModel) async {
+    bool isSuccess = false;
+
+    isSuccess = await FirebaseDatabase.instance.ref(VEHICLES_NODE).child(vehicleModel.registrationNumber).set(vehicleModel.tomap()).then((value) async {
+      MyPrint.printOnConsole("Vehicle Document Added:${vehicleModel.registrationNumber}");
+
+      UserProvider userProvider = Provider.of<UserProvider>(NavigationController().mainAppKey.currentContext!, listen: false);
+      userProvider.userModel?.myVehicles.remove(vehicleModel.registrationNumber);
+      userProvider.userModel?.myVehicles.add(vehicleModel.registrationNumber);
+
+      bool isUpdateUserSuccess = await FirebaseDatabase.instance.ref(USERS_NODE).child(userProvider.userid).child("myVehicles").child(vehicleModel.registrationNumber).set(true).then((value) {
+        MyPrint.printOnConsole("User Document Added:${vehicleModel.registrationNumber}");
+
+        return true;
+      })
+      .catchError((e) {
+        MyPrint.printOnConsole("Error in Adding User Document:${e}");
+
+        return false;
+      });
+
+      return isUpdateUserSuccess;
+    })
+    .catchError((e) {
+      MyPrint.printOnConsole("Error in Adding Vehicle Document:${e}");
+
+      return false;
+    });
+    
+    return isSuccess;
+  }
+
+  Future<bool> deleteVehicle(VehicleModel vehicleModel) async {
+    bool isSuccess = false;
+
+    isSuccess = await FirebaseDatabase.instance.ref(VEHICLES_NODE).child(vehicleModel.registrationNumber).remove().then((value) async {
+      MyPrint.printOnConsole("Vehicle Document Deleted:${vehicleModel.registrationNumber}");
+
+      UserProvider userProvider = Provider.of<UserProvider>(NavigationController().mainAppKey.currentContext!, listen: false);
+      userProvider.userModel?.myVehicles.remove(vehicleModel.registrationNumber);
+
+      bool isUpdateUserSuccess = await FirebaseDatabase.instance.ref(USERS_NODE).child(userProvider.userid).child("myVehicles").child(vehicleModel.registrationNumber).remove().then((value) {
+        MyPrint.printOnConsole("User Document Updated:${vehicleModel.registrationNumber}");
+
+        return true;
+      })
+          .catchError((e) {
+        MyPrint.printOnConsole("Error in Updating User Document:${e}");
+
+        return false;
+      });
+
+      return isUpdateUserSuccess;
+    })
+        .catchError((e) {
+      MyPrint.printOnConsole("Error in Deleting Vehicle Document:${e}");
+
+      return false;
+    });
+
+    return isSuccess;
+  }
+
+  Future<List<ChallanModel>> getChallansFromVehicleId(String vehicleId) async {
+    List<ChallanModel> challans = [];
+
+    DatabaseEvent databaseEvent = await FirebaseDatabase.instance.ref(CHALLANS_NODE).orderByChild("registrationNumber").equalTo(vehicleId).once();
+    MyPrint.printOnConsole("Challans Length:${databaseEvent.snapshot.children.length}");
+
+    databaseEvent.snapshot.children.forEach((DataSnapshot dataSnapshot) {
+      if(dataSnapshot.exists && dataSnapshot.value != null) {
+        Map<String, dynamic> map = {};
+        try {
+          map = Map.castFrom<dynamic, dynamic, String, dynamic>(dataSnapshot.value as Map);
+        }
+        catch(e, s) {
+          MyPrint.printOnConsole("Error in Converting User Data To Map:${e}");
+          MyPrint.printOnConsole(s);
+        }
+
+        if(map.isNotEmpty) {
+          ChallanModel challanModel = ChallanModel.fromMap(map);
+          challans.add(challanModel);
+          MyPrint.printOnConsole("challanModel:${challanModel}");
+        }
+      }
+    });
+
+    return challans;
   }
 }

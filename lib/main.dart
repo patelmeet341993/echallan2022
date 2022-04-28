@@ -1,4 +1,6 @@
 import 'package:echallan2022/splash_screen.dart';
+import 'package:echallan2022/utils/my_print.dart';
+import 'package:echallan2022/utils/styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,11 +14,24 @@ void main() async {
   await Firebase.initializeApp();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  MyPrint.printOnConsole("Void main called");
+
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    MyPrint.printOnConsole("MyApp Init called");
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -37,14 +52,29 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  @override
+  void initState() {
+    MyPrint.printOnConsole("MainApp Init called");
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    //MyPrint.printOnConsole("MainApp build called");
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: NavigationController().mainAppKey,
       initialRoute: SplashScreen.routeName,
       onGenerateRoute: NavigationController().onGeneratedRoutes,
+      theme: ThemeData(
+        primaryColor: Styles.primaryColor,
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Styles.primaryColor,
+        ),
+      ),
+      themeMode: ThemeMode.light,
     );
   }
 }
