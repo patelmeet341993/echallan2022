@@ -17,14 +17,20 @@ class UserModel {
     name = map['name']?.toString() ?? "";
     image = map['image']?.toString() ?? "";
     email = map['email']?.toString() ?? "";
-    createdTime = map['createdTime'];
+
+    try {
+      String timeString = (map['createdTime']?.toString() ?? "");
+      if(timeString.isNotEmpty) {
+        createdTime = DateTime.tryParse(timeString);
+      }
+    }
+    catch(e) {}
 
     try {
       List<String> list = List.castFrom(map['myVehicles'] ?? []);
       myVehicles = list;
     }
     catch(e) {}
-
   }
 
   void updateFromMap(Map<String, dynamic> map) {
@@ -32,7 +38,14 @@ class UserModel {
     name = map['name']?.toString() ?? "";
     image = map['image']?.toString() ?? "";
     email = map['email']?.toString() ?? "";
-    createdTime = map['createdTime'];
+
+    try {
+      String timeString = (map['createdTime']?.toString() ?? "");
+      if(timeString.isNotEmpty) {
+        createdTime = DateTime.tryParse(timeString);
+      }
+    }
+    catch(e) {}
 
     try {
       List<String> list = List.castFrom(map['myVehicles'] ?? []);
@@ -49,7 +62,7 @@ class UserModel {
       "image" : image,
       "email" : email,
       "myVehicles" : myVehicles,
-      "createdTime" : createdTime,
+      "createdTime" : createdTime.toString(),
     };
   }
 

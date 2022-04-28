@@ -1,4 +1,5 @@
 import 'package:echallan2022/configs/constants.dart';
+import 'package:echallan2022/controllers/navigation_controller.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:echallan2022/controllers/providers/user_provider.dart';
@@ -26,7 +27,8 @@ class UserController {
 
     try {
       DataSnapshot dataSnapshot = await FirebaseDatabase.instance.ref(USERS_NODE).child(uid).get();
-      //DocumentSnapshot<Map<String, dynamic>> dataSnapshot = await FirestoreController().firestore.collection('users').doc(uid).get();
+      MyPrint.printOnConsole("dataSnapshot IsExist:${dataSnapshot.exists}");
+      MyPrint.printOnConsole("dataSnapshot data:${dataSnapshot.value}");
 
       UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
       if(dataSnapshot.exists && dataSnapshot.value != null) {
@@ -70,12 +72,6 @@ class UserController {
 
   Future<bool> createUser(BuildContext context,UserModel userModel) async {
     try {
-      /*Map<String, dynamic> data = {
-        "ClientId" : clientModel.ClientId,
-      };*/
-      //if(clientModel.ClientPhoneNo.isNotEmpty) data['ClientPhoneNo'] = clientModel.ClientPhoneNo;
-      //if(clientModel.ClientEmailId.isNotEmpty) data['ClientEmailId'] = clientModel.ClientEmailId;
-      //data.remove("ClientId");
       Map<String, dynamic> data = userModel.tomap();
 
       await FirebaseDatabase.instance.ref(USERS_NODE).child(userModel.id).set(data);
@@ -90,5 +86,20 @@ class UserController {
     }
 
     return false;
+  }
+
+  Future<void> getMyVehicles() async {
+    UserProvider userProvider = Provider.of<UserProvider>(NavigationController().mainAppKey.currentContext!, listen: false);
+
+    if((userProvider.userModel?.myVehicles ?? []).isNotEmpty) {
+      userProvider.vehiclesList.clear();
+      userProvider.isVehiclesLoading = true;
+      userProvider.notifyListeners();
+
+      //FirebaseDatabase.instance.ref()
+
+      userProvider.isVehiclesLoading = false;
+      userProvider.notifyListeners();
+    }
   }
 }

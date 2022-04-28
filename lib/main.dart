@@ -1,3 +1,4 @@
+import 'package:echallan2022/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<ConnectionProvider>(create: (_) => ConnectionProvider(),),
+        ChangeNotifierProvider<ConnectionProvider>(create: (_) => ConnectionProvider(), lazy: false,),
         ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider(),),
       ],
       child: const MainApp(),
@@ -41,6 +42,8 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: NavigationController().mainAppKey,
+      initialRoute: SplashScreen.routeName,
       onGenerateRoute: NavigationController().onGeneratedRoutes,
     );
   }

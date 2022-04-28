@@ -8,6 +8,8 @@ import 'package:echallan2022/splash_screen.dart';
 import 'package:echallan2022/utils/my_print.dart';
 
 class NavigationController {
+  GlobalKey<NavigatorState> mainAppKey = GlobalKey<NavigatorState>();
+
   Route? onGeneratedRoutes(RouteSettings routeSettings) {
     MyPrint.printOnConsole("OnGeneratedRoutes Called for ${routeSettings.name} with arguments:${routeSettings.arguments}");
 

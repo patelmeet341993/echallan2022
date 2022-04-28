@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "937563160171",
+    "firebase_url": "https://echallan2022-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "echallan2022",
     "storage_bucket": "echallan2022.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "937563160171-bhhm0ph3usl7b5ti782n0v4icgf21mma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.echallan2022",
+            "certificate_hash": "acd94dce6f7021bed3b5142790a2cd5f756ceee0"
+          }
+        },
         {
           "client_id": "937563160171-voov67ah8omvs1tgre2ghsqlsv05k0oa.apps.googleusercontent.com",
           "client_type": 3

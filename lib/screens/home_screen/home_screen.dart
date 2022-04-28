@@ -65,11 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
       child: SafeArea(
         child: Scaffold(
           backgroundColor: Styles.background,
+          floatingActionButton: getFloatingButton(),
           body: Column(
             children: [
               MyAppBar(title: "Virtual Keyboard", backbtnVisible: false, color: Colors.white,),
               Expanded(
-                child: getMainBody(),
+                child: getMyVehiclesListViw(),
               ),
             ],
           ),
@@ -77,49 +78,17 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  
-  Widget getMainBody() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: MySize.size10!, vertical: MySize.size5!),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
 
-        ],
-      ),
+  FloatingActionButton getFloatingButton() {
+    return FloatingActionButton(
+      onPressed: () {
+
+      },
+      child: Icon(Icons.add),
     );
   }
   
-  Widget getMainText(String text) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(MySize.size10!),
-        border: Border.all(color: Styles.primaryColor, width: 1),
-      ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-    );
-  }
-
-  Widget getOnOffSwitch() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Switch(value: status, onChanged: (bool? newValue) {
-          print("On Changed Called:${newValue}");
-          _deviceRef.update({"status" : (newValue ?? false) ? "on" : "off"});
-        }),
-        SizedBox(width: MySize.size10!,),
-        Text(status ? "On" : "Off", style: const TextStyle(color: Colors.black),)
-      ],
-    );
+  Widget getMyVehiclesListViw() {
+    return Container();
   }
 }

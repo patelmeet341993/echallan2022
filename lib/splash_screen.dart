@@ -25,22 +25,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void startListeners() async {
     MyPrint.printOnConsole("Start Listener Called");
 
-    DateTime startTime = DateTime.now();
-
-    int count = 0;
-    Function whenComplete = () => count++;
-
-
-
-    /*while(count < 5) {
-      await Future.delayed(Duration(milliseconds: 100));
-    }*/
-
-    DateTime endTime = DateTime.now();
-    MyPrint.printOnConsole("Data Got in ${endTime.difference(startTime).inMilliseconds} Milliseconds");
-
-    //await Future.delayed(Duration(seconds: 3));
-    if(await AuthenticationController().isUserLogin(context: context, initializeUserid: true)) {
+    bool isUserLogin = await AuthenticationController().isUserLogin(context: context, initializeUserid: true);
+    if(isUserLogin) {
       UserProvider userProvider = Provider.of<UserProvider>(context, listen: false);
 
       bool isExist = await UserController().isUserExist(context, userProvider.userid);
