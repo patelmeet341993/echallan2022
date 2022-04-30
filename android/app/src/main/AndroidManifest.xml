@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.echallan2022">
-   <application
-        android:label="echallan2022"
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:label="E-Challan"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
