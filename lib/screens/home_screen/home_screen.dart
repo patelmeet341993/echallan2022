@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             floatingActionButton: getFloatingButton(),
             body: Column(
               children: [
-                MyAppBar(title: "Virtual Keyboard", backbtnVisible: false, color: Colors.white,),
+                MyAppBar(title: "Vehicles", backbtnVisible: false, color: Colors.white,),
                 Expanded(
                   child: getMyVehiclesListViw(),
                 ),
